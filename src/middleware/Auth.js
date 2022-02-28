@@ -17,7 +17,13 @@ export default async (req, res, next) => {
     if (!user) {
       return sendErrorResponse(res, 401, 'Authentication Failed');
     }
-    if (user.status !== 'active') return sendErrorResponse(res, 403, 'Your account is either suspended or inactive. Contact admin to re-activate your account.');
+    if (user.status !== 'active') {
+      return sendErrorResponse(
+        res,
+        403,
+        'Your account is either suspended or inactive. Contact admin to re-activate your account.',
+      );
+    }
 
     req.currentAccessToken = currentAccessToken;
     req.userData = user;

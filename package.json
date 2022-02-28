@@ -4,12 +4,15 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon --exec babel-node app.js"
+    "dev": "nodemon --exec babel-node app.js",
+    "lint:dry": "./node_modules/.bin/eslint --fix-dry-run .",
+    "lint:fix": "./node_modules/.bin/eslint --fix ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "mysql2": "^2.3.3",
     "sequelize": "^6.17.0"
