@@ -2,7 +2,7 @@
 
 * Clone the project.
 * `cd` into the project folder.
-* Run `npm install`.
+* Run `npm ci`.
 * Create a file `.env` in the root directory running `cp example.env .env`.
 * Run `npm run dev`.
 
