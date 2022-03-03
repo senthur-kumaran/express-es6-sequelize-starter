@@ -8,6 +8,12 @@ import statusCode from '../utils/statusCode';
 const { User, Role } = model;
 
 export default {
+  /**
+   * User registration.
+   * @param {object} req
+   * @param {object} res
+   * @returns {object}
+   */
   async signUp(req, res) {
     const {
       email, password, name, phone,
@@ -52,6 +58,12 @@ export default {
     }
   },
 
+  /**
+   * User login.
+   * @param {object} req
+   * @param {object} res
+   * @returns {object}
+   */
   async login(req, res) {
     const { login, password } = req.body;
 

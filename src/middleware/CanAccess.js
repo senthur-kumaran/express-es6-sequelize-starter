@@ -13,6 +13,6 @@ export default (permission) => async (req, res, next) => {
   if (await req.userData.hasPermissionTo(access)) {
     return next();
   }
-  console.error('You do not have the authorization to access this.');
+
   return sendErrorResponse(res, 403, 'You do not have the authorization to access this');
 };

@@ -5,6 +5,12 @@ import statusCode from '../utils/statusCode';
 const { User } = model;
 
 export default {
+  /**
+   * Get all users.
+   * @param {object} req
+   * @param {object} res
+   * @returns {object}
+   */
   async users(req, res) {
     try {
       return sendSuccessResponse(res, statusCode.CREATED, await User.findAll(), 'All registered users');
