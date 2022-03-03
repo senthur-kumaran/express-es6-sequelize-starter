@@ -3,6 +3,7 @@ import model from '../models';
 import { sendErrorResponse, sendSuccessResponse } from '../utils/sendResponse';
 import { hash, hashCompare } from '../utils/hashing';
 import constants from '../utils/constants';
+import statusCode from '../utils/statusCode';
 
 const { User, Role } = model;
 
@@ -14,7 +15,7 @@ export default {
     try {
       let user = await User.findOne({ where: { [Op.or]: [{ phone }, { email }] } });
       if (user) {
-        return sendErrorResponse(res, 422, 'User with that email or phone already exists');
+        return sendErrorResponse(res, statusCode.UNPROCESSABLE_ENTITY, 'User with that email or phone already exists');
       }
       const settings = {
         notification: {
@@ -33,7 +34,7 @@ export default {
       const userRole = await Role.findOne({ where: { name: constants.ROLE_AUTHENTICATED } });
       user.addRole(userRole);
 
-      return sendSuccessResponse(res, 201, {
+      return sendSuccessResponse(res, statusCode.CREATED, {
         user: {
           id: user.id,
           name: user.name,
@@ -42,7 +43,12 @@ export default {
       }, 'Account created successfully');
     } catch (e) {
       console.error(e);
-      return sendErrorResponse(res, 500, 'Could not perform operation at this time, kindly try again later.', e);
+      return sendErrorResponse(
+        res,
+        statusCode.INTERNAL_SERVER_ERROR,
+        'Could not perform operation at this time, kindly try again later.',
+        e,
+      );
     }
   },
 
@@ -52,18 +58,24 @@ export default {
     try {
       const user = await User.findOne({ where: { email: login } });
 
-      if (!user) return sendErrorResponse(res, 404, 'Incorrect login credentials. Kindly check and try again');
+      if (!user) {
+        return sendErrorResponse(res, statusCode.NOT_FOUND, 'Incorrect login credentials. Kindly check and try again');
+      }
       const checkPassword = hashCompare(hash(password), user.password);
       if (!checkPassword) {
-        return sendErrorResponse(res, 400, 'Incorrect login credentials. Kindly check and try again');
+        return sendErrorResponse(
+          res,
+          statusCode.BAD_REQUEST,
+          'Incorrect login credentials. Kindly check and try again',
+        );
       }
 
       if (user.status !== 'active') {
-        return sendErrorResponse(res, 401, 'Your account has been suspended. Contact admin');
+        return sendErrorResponse(res, statusCode.UNAUTHORIZED, 'Your account has been suspended. Contact admin');
       }
 
       const token = await user.newToken();
-      return sendSuccessResponse(res, 200, {
+      return sendSuccessResponse(res, statusCode.OK, {
         token: token.plainTextToken,
         user: {
           name: user.name,
@@ -73,7 +85,12 @@ export default {
       }, 'Login successfully');
     } catch (e) {
       console.error(e);
-      return sendErrorResponse(res, 500, 'Server error, contact admin to resolve issue', e);
+      return sendErrorResponse(
+        res,
+        statusCode.INTERNAL_SERVER_ERROR,
+        'Server error, contact admin to resolve issue',
+        e,
+      );
     }
   },
 };
