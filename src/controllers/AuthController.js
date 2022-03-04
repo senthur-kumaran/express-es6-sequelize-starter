@@ -4,6 +4,7 @@ import { sendErrorResponse, sendSuccessResponse } from '../utils/sendResponse';
 import { hash, hashCompare } from '../utils/hashing';
 import constants from '../utils/constants';
 import statusCode from '../utils/statusCode';
+import { newToken } from '../services/userService';
 
 const { User, Role } = model;
 
@@ -86,7 +87,7 @@ export default {
         return sendErrorResponse(res, statusCode.UNAUTHORIZED, 'Your account has been suspended. Contact admin');
       }
 
-      const token = await user.newToken();
+      const token = await newToken(user);
       return sendSuccessResponse(res, statusCode.OK, {
         token: token.plainTextToken,
         user: {

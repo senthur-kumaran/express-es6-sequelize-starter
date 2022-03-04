@@ -1,5 +1,6 @@
 import { sendErrorResponse } from '../utils/sendResponse';
 import model from '../models';
+import { hasPermissionTo } from '../services/userService';
 
 const { Role, Permission } = model;
 
@@ -10,7 +11,7 @@ export default (permission) => async (req, res, next) => {
       attributes: ['id', 'name'], model: Role, as: 'roles', through: { attributes: [] },
     }],
   });
-  if (await req.userData.hasPermissionTo(access)) {
+  if (await hasPermissionTo(req.userData, access)) {
     return next();
   }
 
